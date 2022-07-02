@@ -1,0 +1,46 @@
+try:
+    from nltk.corpus import stopwords
+    from googlesearch import search
+    from urllib.request import urlopen
+    from bs4 import BeautifulSoup
+    import pyttsx3 
+    engine = pyttsx3.init()
+    engine.setProperty('voice', 'com.apple.speech.synthesis.voice.alice')
+    en_stopwords = stopwords.words('french')
+                    
+except ImportError:
+    print("Import error please install (or check) libraries")
+
+ 
+# to search
+text = input("Domanda:")
+
+st=[]
+for token in text.split():
+    if token.lower() not in en_stopwords:     
+        lst.append(token)
+        print(' '.join(lst))
+for j in search(lst, tld="co.in", num=1, stop=1, pause=2,lang="fr"):
+    print(j)
+
+url = j
+html = urlopen(url).read()
+soup = BeautifulSoup(html, features="html.parser")
+# delete unwanted elements
+for script in soup(["script", "style"]):
+    script.extract()  
+
+# get actual text
+texts = soup.get_text()
+
+
+lines = (line.strip() for line in text.splitlines())
+chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+texts = '\n'.join(chunk for chunk in chunks if chunk)
+
+print(texts)
+
+import pyttsx3 
+
+engine.say(texts) 
+engine.runAndWait() 
